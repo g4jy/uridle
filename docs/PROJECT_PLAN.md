@@ -483,22 +483,37 @@ ScrollTrigger — included with GSAP
 
 ## 9. Marketplace Tools & Plugins
 
-### Already Available (in current Claude Code setup)
-- **Playwright MCP**: Browser automation for testing/preview
-- **Notion MCP**: For future homework/content integration
-- **Frontend Design Plugin**: Aesthetic guidelines to prevent "AI slop"
+### Tier 1: Install Immediately
 
-### Recommended to Add
-- **GSAP MCP Server**: Natural language → production-ready GSAP code
-  - Source: https://github.com/bruzethegreat/gsap-master-mcp-server
-  - Why: ScrollTrigger animations, parallax, pinning — all core features
-- **Magic UI (21st.dev) MCP**: Modern component generation
-  - Source: https://github.com/21st-dev/magic-mcp
-  - Why: Rapid UI component prototyping with TypeScript/React patterns
-- **AI SVG Generation**: For hand-drawn illustrations
-  - Recraft (recraft.ai) — best quality AI SVG with hand-drawn styles
-  - SVGStorm — text prompt → SVG generation
-  - Kittl — custom vector icons with text-to-image
+| Tool | Type | Why | Install |
+|------|------|-----|---------|
+| **Frontend Design Plugin** | Plugin (96K installs) | Prevents AI slop. Enforces bold aesthetic direction, scroll-triggered animations, motion orchestration | `/plugin` > `anthropics/claude-code` > `frontend-design` |
+| **GSAP Master MCP** | MCP Server | 6 tools: animate, timeline, ScrollTrigger, SVG morph, debug, optimize. Natural language → 60fps GSAP code | `claude mcp add-json gsap-master '{"command":"npx","args":["bruzethegreat-gsap-master-mcp-server@latest"]}'` |
+
+### Tier 2: Workflow Enhancement
+
+| Tool | Type | Why | Install |
+|------|------|-----|---------|
+| **SVGMaker MCP** | MCP Server | AI text-to-SVG, SVG editing, raster-to-vector. For storybook illustrations | Needs API key from svgmaker.io |
+| **Figma MCP** | MCP Server | Design-to-code bridge. Read Figma designs → generate code | Figma Desktop > Preferences > Dev Mode MCP |
+
+### Already Available (SuperClaude setup)
+- **Playwright MCP**: Browser testing, device emulation (143 profiles), screenshot
+- **Magic UI (21st.dev) MCP**: React component generation from natural language
+- **Context7 MCP**: Up-to-date library docs (GSAP, Swiper.js, etc.)
+- **Morphllm MCP**: Bulk code transformations
+- **Sequential MCP**: Complex analysis and debugging
+
+### External SVG Tools (generate externally, import output)
+
+| Tool | Styles | Best For |
+|------|--------|----------|
+| [VectorWitch](https://vectorwitch.com/) | Drawing, Doodle, Ink, Cartoon | 8 hand-drawn presets, SVG export |
+| [Recraft](https://recraft.ai/) | Multiple illustration styles | First AI built for native SVG |
+| [Ilus.ai](https://ilus.ai/) | Flat, Ink Drawing, Doodle, Custom | Consistent style across illustrations |
+| [Kittl](https://kittl.com/tools/vector-generator) | Various artistic styles | Edit vectors in-app after generation |
+
+**Note**: Claude can also generate SVG code directly — for simple hand-drawn-style illustrations (wobbly lines, sketchy fills, organic shapes), inline SVG generation without external tools is often sufficient.
 
 ### Skills to Create
 - `/uridle-preview`: Launch local server + Playwright screenshot workflow
@@ -509,12 +524,15 @@ ScrollTrigger — included with GSAP
 
 ## 10. Implementation Tasks
 
-### Phase 0: Setup [CURRENT]
+### Phase 0: Setup [DONE]
 - [x] Create project directory (`G:\내 드라이브\uridle\`)
 - [x] Write PROJECT_PLAN.md (this document)
-- [ ] Write CLAUDE.md (project instructions)
-- [ ] Initialize git repository
-- [ ] Install/configure GSAP MCP server
+- [x] Write CLAUDE.md (project instructions)
+- [x] Initialize git repository
+- [x] Install GSAP Master MCP server
+- [x] Research marketplace tools (comprehensive report)
+- [x] Analyze Instagram cultural design insight
+- [ ] Install Frontend Design plugin (needs `/plugin` interactive command)
 - [ ] Set up local preview workflow
 
 ### Phase 1: Page 1 — Storybook
