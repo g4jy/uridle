@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uridle — Packages & Booking</title>
+<meta name="description" content="Choose your Korean learning track. Starter, Builder, or Accelerator packages with personalized tutoring.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================
+   SHARED DESIGN SYSTEM
+   ============================================ */
+:root {
+  --midnight:   #1B2438;
+  --amber:      #E8983E;
+  --terracotta: #C4654A;
+  --sage:       #6B9080;
+  --lavender:   #8B7EB8;
+  --rice:       #F7F3ED;
+  --ink:        #2A2A2A;
+
+  --amber-soft:      rgba(232,152,62,0.15);
+  --terracotta-soft: rgba(196,101,74,0.15);
+  --sage-soft:       rgba(107,144,128,0.15);
+  --lavender-soft:   rgba(139,126,184,0.15);
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-hand:    'Caveat', cursive;
+
+  --ease-smooth: cubic-bezier(.25,1,.5,1);
+  --duration-md: 600ms;
+  --duration-sm: 300ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-body); color: var(--ink); background: var(--rice); line-height: 1.6; overflow-x: hidden; }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height: 1.2; }
+
+/* Shared section + reveal */
+.section { padding: 5rem 2rem; position: relative; }
+.section-inner { max-width: 1000px; margin: 0 auto; }
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity var(--duration-md) var(--ease-smooth), transform var(--duration-md) var(--ease-smooth); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================
+   CONTINUOUS THREAD SVG
+   ============================================ */
+.thread-svg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1000px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+}
+.thread-line {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 2;
+  stroke-dasharray: 8 6;
+  opacity: 0.3;
+}
+
+/* ============================================
+   NAV BAR
+   ============================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(247,243,237,0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-brand {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-brand span { color: var(--amber); }
+.nav-links { display: flex; gap: 1.5rem; align-items: center; }
+.nav-links a {
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity var(--duration-sm);
+}
+.nav-links a:hover { opacity: 1; }
+.nav-cta {
+  background: var(--amber) !important;
+  color: var(--midnight) !important;
+  opacity: 1 !important;
+  padding: 0.4rem 1.2rem;
+  border-radius: 2rem;
+  font-weight: 500;
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+#hero {
+  background: var(--midnight);
+  color: var(--rice);
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  padding-top: 5rem;
+}
+#hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--rice);
+  margin-bottom: 1rem;
+}
+#hero p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  opacity: 0.7;
+  max-width: 550px;
+}
+#hero .hero-tag {
+  display: inline-block;
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  color: var(--amber);
+  margin-bottom: 1rem;
+}
+
+/* ============================================
+   HOW IT WORKS (5 Waypoints)
+   ============================================ */
+#how-it-works { background: var(--rice); }
+
+.waypoints {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  position: relative;
+}
+
+.waypoint {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.waypoint-number {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.waypoint h3 { font-size: 1.15rem; margin-bottom: 0.35rem; }
+.waypoint p { font-size: 0.9rem; opacity: 0.7; line-height: 1.6; }
+
+/* ============================================
+   PACKAGES
+   ============================================ */
+#packages { background: linear-gradient(180deg, var(--rice) 0%, #f0ece5 100%); }
+
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.package-card {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 2rem;
+  border: 2px solid transparent;
+  transition: all var(--duration-sm) var(--ease-smooth);
+  position: relative;
+}
+.package-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+.package-card.featured {
+  border-color: var(--amber);
+}
+.package-card.featured::before {
+  content: 'Most Popular';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--amber);
+  color: var(--midnight);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 1rem;
+  border-radius: 1rem;
+}
+
+.package-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 0.25rem;
+}
+.package-freq {
+  font-size: 0.85rem;
+  opacity: 0.5;
+  margin-bottom: 1.5rem;
+}
+
+.package-features {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+.package-features li {
+  padding: 0.4rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.package-features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+
+.package-price {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.package-note {
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.package-btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1.5rem;
+  border: 2px solid var(--amber);
+  background: transparent;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all var(--duration-sm) var(--ease-smooth);
+}
+.package-btn:hover {
+  background: var(--amber);
+  color: var(--midnight);
+}
+.package-card.featured .package-btn {
+  background: var(--amber);
+  color: var(--midnight);
+}
+.package-card.featured .package-btn:hover {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+  color: white;
+}
+
+/* ============================================
+   ADDONS
+   ============================================ */
+#addons { background: #f0ece5; }
+
+.addon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.addon-item {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--duration-sm) var(--ease-smooth);
+  text-align: center;
+}
+.addon-item:hover {
+  border-color: var(--amber);
+  transform: translateY(-2px);
+}
+.addon-item.selected { border-color: var(--amber); background: var(--amber-soft); }
+
+.addon-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.addon-name { font-family: var(--font-display); font-size: 0.95rem; margin-bottom: 0.25rem; }
+.addon-price { font-size: 0.8rem; opacity: 0.5; }
+
+/* Addon detail panel */
+.addon-panel {
+  position: fixed;
+  top: 0;
+  right: -450px;
+  width: min(420px, 90vw);
+  height: 100vh;
+  background: white;
+  box-shadow: -4px 0 30px rgba(0,0,0,0.15);
+  z-index: 200;
+  padding: 2rem;
+  overflow-y: auto;
+  transition: right 0.4s var(--ease-smooth);
+}
+.addon-panel.open { right: 0; }
+.addon-panel-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.addon-panel h3 { font-size: 1.3rem; margin: 1rem 0 0.5rem; }
+.addon-panel p { font-size: 0.9rem; line-height: 1.6; opacity: 0.8; margin-bottom: 1rem; }
+.addon-panel .quote {
+  background: var(--amber-soft);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid var(--amber);
+}
+.addon-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(4px);
+  z-index: 199;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.addon-backdrop.visible { opacity: 1; pointer-events: auto; }
+
+/* ============================================
+   AVAILABILITY HEATMAP
+   ============================================ */
+#availability { background: var(--rice); }
+
+.tz-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+.tz-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 2rem;
+  background: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--duration-sm);
+}
+.tz-btn.active { background: var(--midnight); color: var(--rice); border-color: var(--midnight); }
+
+.heatmap {
+  display: grid;
+  grid-template-columns: 80px repeat(6, 1fr);
+  gap: 2px;
+  font-size: 0.8rem;
+}
+.heatmap-header {
+  font-weight: 600;
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.75rem;
+}
+.heatmap-day {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
+}
+.heatmap-cell {
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  border-radius: 0.35rem;
+  font-size: 0.75rem;
+  transition: all var(--duration-sm);
+}
+.heatmap-cell.off      { background: #f5f5f5; color: #ccc; }
+.heatmap-cell.available { background: #e8f5e9; color: #2e7d32; }
+.heatmap-cell.moderate  { background: #fff8e1; color: #f57f17; }
+.heatmap-cell.popular   { background: #fbe9e7; color: #d84315; }
+.heatmap-cell.lunch     { background: #fafafa; color: #bbb; font-style: italic; }
+
+/* ============================================
+   FAQ
+   ============================================ */
+#faq { background: linear-gradient(180deg, var(--rice) 0%, #f0ece5 100%); }
+
+.faq-list { max-width: 700px; margin: 0 auto; }
+
+.faq-item {
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 1.25rem 0;
+}
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  gap: 1rem;
+}
+.faq-arrow {
+  font-size: 1.2rem;
+  transition: transform var(--duration-sm) var(--ease-smooth);
+  flex-shrink: 0;
+}
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease-smooth);
+  font-size: 0.9rem;
+  opacity: 0.7;
+  line-height: 1.7;
+}
+.faq-item.open .faq-answer { max-height: 300px; padding-top: 0.75rem; }
+
+/* ============================================
+   BOOKING FORM
+   ============================================ */
+#booking { background: var(--midnight); color: var(--rice); }
+
+.booking-form {
+  max-width: 550px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+.form-group input, .form-group select, .form-group textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  color: var(--rice);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  transition: border-color var(--duration-sm);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--amber);
+}
+.form-group select option { background: var(--midnight); color: var(--rice); }
+
+.submit-btn {
+  padding: 1rem;
+  background: var(--amber);
+  color: var(--midnight);
+  border: none;
+  border-radius: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-sm) var(--ease-smooth);
+  margin-top: 0.5rem;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(232,152,62,0.4); }
+
+/* Success state */
+.booking-success {
+  display: none;
+  text-align: center;
+  padding: 3rem 0;
+}
+.booking-success.show { display: block; }
+.booking-success h3 { font-size: 1.5rem; color: var(--rice); margin-bottom: 1rem; }
+.success-check {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto 1.5rem;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  background: var(--ink);
+  color: var(--rice);
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+.footer a { color: var(--amber); text-decoration: none; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .package-grid { grid-template-columns: 1fr; }
+  .addon-grid { grid-template-columns: repeat(2, 1fr); }
+  .heatmap { font-size: 0.7rem; }
+  .heatmap-header { font-size: 0.65rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .waypoint { grid-template-columns: 48px 1fr; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-brand">uri<span>dle</span></a>
+  <div class="nav-links">
+    <a href="#packages">Packages</a>
+    <a href="#availability">Schedule</a>
+    <a href="#faq">FAQ</a>
+    <a href="#booking" class="nav-cta">Book Trial</a>
+  </div>
+</nav>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<section id="hero" class="section">
+  <div class="section-inner">
+    <div class="hero-tag reveal">From the story to the system</div>
+    <h1 class="reveal" style="transition-delay:0.1s">Here's what I've built<br>for you.</h1>
+    <p class="reveal" style="transition-delay:0.2s">A complete system, not just a lesson. Choose your track and let's start building your Korean.</p>
+  </div>
+</section>
+
+<!-- ============================================
+     HOW IT WORKS
+     ============================================ -->
+<section id="how-it-works" class="section">
+  <div class="section-inner">
+    <h2 class="reveal" style="text-align:center;margin-bottom:3rem;">How It Works</h2>
+
+    <div class="waypoints">
+      <div class="waypoint reveal">
+        <div class="waypoint-number" style="background:var(--amber);">1</div>
+        <div>
+          <h3>Book a Trial</h3>
+          <p>A brief conversation about your goals, your level, and why Korean matters to you. No pressure, no commitment.</p>
+        </div>
+      </div>
+      <div class="waypoint reveal">
+        <div class="waypoint-number" style="background:var(--terracotta);">2</div>
+        <div>
+          <h3>Get Your Roadmap</h3>
+          <p>I create a custom plan based on the gap between where you are and where you want to be. Monthly, weekly, daily milestones.</p>
+        </div>
+      </div>
+      <div class="waypoint reveal">
+        <div class="waypoint-number" style="background:var(--sage);">3</div>
+        <div>
+          <h3>Choose Your Track</h3>
+          <p>Intensive (deadline-driven), Steady (work-life balance), or Light (hobby pace). Switch anytime based on your life.</p>
+        </div>
+      </div>
+      <div class="waypoint reveal">
+        <div class="waypoint-number" style="background:var(--lavender);">4</div>
+        <div>
+          <h3>Build Your Routine</h3>
+          <p>Daily micro-tasks between classes. Voice recordings, short sentences, gentle nudges. Class becomes verification, not lecture.</p>
+        </div>
+      </div>
+      <div class="waypoint reveal">
+        <div class="waypoint-number" style="background:var(--amber);">5</div>
+        <div>
+          <h3>Fly Solo</h3>
+          <p>The ultimate goal: you don't need me anymore. Self-analysis, self-correction, independence. When you're ready, I'll celebrate with you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     PACKAGES
+     ============================================ -->
+<section id="packages" class="section">
+  <div class="section-inner">
+    <h2 class="reveal" style="text-align:center;margin-bottom:0.5rem;">Choose Your Track</h2>
+    <p class="reveal" style="text-align:center;opacity:0.6;margin-bottom:3rem;">All packages include personalized curriculum, detailed feedback, and between-class support.</p>
+
+    <div class="package-grid">
+      <div class="package-card reveal">
+        <div class="package-name">Starter</div>
+        <div class="package-freq">1 lesson / week</div>
+        <ul class="package-features">
+          <li>50-minute personalized lesson</li>
+          <li>Light homework assignments</li>
+          <li>Weekly progress check</li>
+          <li>Message support (48hr response)</li>
+        </ul>
+        <div class="package-price">From $25/lesson</div>
+        <div class="package-note">Best for hobbyists and casual learners</div>
+        <button class="package-btn" onclick="scrollToBooking()">Get Started</button>
+      </div>
+
+      <div class="package-card featured reveal">
+        <div class="package-name">Builder</div>
+        <div class="package-freq">2 lessons / week</div>
+        <ul class="package-features">
+          <li>Everything in Starter</li>
+          <li>Daily assignments + voice recordings</li>
+          <li>Detailed feedback within 24 hours</li>
+          <li>Personal sentence-builder web app</li>
+          <li>Priority message support</li>
+        </ul>
+        <div class="package-price">From $22/lesson</div>
+        <div class="package-note">Best for steady, consistent growth</div>
+        <button class="package-btn" onclick="scrollToBooking()">Get Started</button>
+      </div>
+
+      <div class="package-card reveal">
+        <div class="package-name">Accelerator</div>
+        <div class="package-freq">3 lessons / week</div>
+        <ul class="package-features">
+          <li>Everything in Builder</li>
+          <li>TOPIK / exam prep materials</li>
+          <li>Pronunciation clinic sessions</li>
+          <li>Emergency support line</li>
+          <li>Monthly strategy review</li>
+        </ul>
+        <div class="package-price">From $20/lesson</div>
+        <div class="package-note">Best for deadline-driven learners</div>
+        <button class="package-btn" onclick="scrollToBooking()">Get Started</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     ADDONS
+     ============================================ -->
+<section id="addons" class="section">
+  <div class="section-inner">
+    <h2 class="reveal" style="text-align:center;margin-bottom:0.5rem;">Customize Your Experience</h2>
+    <p class="reveal" style="text-align:center;opacity:0.6;margin-bottom:2.5rem;">Add modules to any package. Click for details.</p>
+
+    <div class="addon-grid">
+      <div class="addon-item reveal" onclick="openAddon('pronunciation')">
+        <div class="addon-icon">&#x1F3A4;</div>
+        <div class="addon-name">Pronunciation Clinic</div>
+        <div class="addon-price">+$8/lesson</div>
+      </div>
+      <div class="addon-item reveal" onclick="openAddon('writing')">
+        <div class="addon-icon">&#x270D;&#xFE0F;</div>
+        <div class="addon-name">Writing Workshop</div>
+        <div class="addon-price">+$6/lesson</div>
+      </div>
+      <div class="addon-item reveal" onclick="openAddon('topik')">
+        <div class="addon-icon">&#x1F4DD;</div>
+        <div class="addon-name">TOPIK Prep</div>
+        <div class="addon-price">+$10/lesson</div>
+      </div>
+      <div class="addon-item reveal" onclick="openAddon('culture')">
+        <div class="addon-icon">&#x1F30F;</div>
+        <div class="addon-name">Cultural Deep Dive</div>
+        <div class="addon-price">+$5/lesson</div>
+      </div>
+      <div class="addon-item reveal" onclick="openAddon('webapp')">
+        <div class="addon-icon">&#x1F4F1;</div>
+        <div class="addon-name">Personal Web App</div>
+        <div class="addon-price">Included in Builder+</div>
+      </div>
+      <div class="addon-item reveal" onclick="openAddon('emergency')">
+        <div class="addon-icon">&#x1F198;</div>
+        <div class="addon-name">Emergency Line</div>
+        <div class="addon-price">+$15/month</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Addon Detail Panel -->
+<div class="addon-backdrop" id="addonBackdrop" onclick="closeAddon()"></div>
+<div class="addon-panel" id="addonPanel">
+  <button class="addon-panel-close" onclick="closeAddon()">&#x2715;</button>
+  <div id="addonPanelContent"></div>
+</div>
+
+<!-- ============================================
+     AVAILABILITY HEATMAP
+     ============================================ -->
+<section id="availability" class="section">
+  <div class="section-inner">
+    <h2 class="reveal" style="text-align:center;margin-bottom:0.5rem;">Available Times</h2>
+    <p class="reveal" style="text-align:center;opacity:0.6;margin-bottom:2rem;">All times shown in your selected timezone. Green = available, yellow = limited, red = popular.</p>
+
+    <div class="tz-selector reveal">
+      <button class="tz-btn active" onclick="setTimezone(9)">KST (Seoul)</button>
+      <button class="tz-btn" onclick="setTimezone(-5)">EST (New York)</button>
+      <button class="tz-btn" onclick="setTimezone(-8)">PST (LA)</button>
+      <button class="tz-btn" onclick="setTimezone(0)">GMT (London)</button>
+      <button class="tz-btn" onclick="setTimezone(1)">CET (Paris)</button>
+      <button class="tz-btn" onclick="setTimezone(8)">SGT (Singapore)</button>
+      <button class="tz-btn" onclick="setTimezone(9.5)">ACST (Adelaide)</button>
+    </div>
+
+    <div class="heatmap reveal" id="heatmap"></div>
+
+    <p class="reveal" style="text-align:center;margin-top:1.5rem;font-size:0.85rem;opacity:0.5;">Tuesday is reserved for in-person sessions &amp; student visits.</p>
+  </div>
+</section>
+
+<!-- ============================================
+     FAQ
+     ============================================ -->
+<section id="faq" class="section">
+  <div class="section-inner">
+    <h2 class="reveal" style="text-align:center;margin-bottom:3rem;">Frequently Asked Questions</h2>
+
+    <div class="faq-list">
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-question">What happens in a trial lesson?<span class="faq-arrow">&#x25BC;</span></div>
+        <div class="faq-answer">We'll have a relaxed conversation about your goals, your current level, and why Korean matters to you. I'll check your pronunciation, grammar awareness, and listening comprehension through natural dialogue. Then I'll sketch a realistic plan for your success. Even if you choose a different tutor, you'll walk away with something valuable.</div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-question">How fast will I improve?<span class="faq-arrow">&#x25BC;</span></div>
+        <div class="faq-answer">It depends on your starting point, goals, and consistency. Most students on the Builder track notice clear improvement within 4-6 weeks. The key isn't lesson hours; it's what happens between classes. My system is designed to maximize your growth time, not just our meeting time.</div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-question">Can I switch tracks?<span class="faq-arrow">&#x25BC;</span></div>
+        <div class="faq-answer">Absolutely. Life changes, and your learning pace should too. Busy week? Go Light. Exam coming up? Switch to Accelerator. Just let me know and I'll adjust your plan immediately.</div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-question">What if I miss a class?<span class="faq-arrow">&#x25BC;</span></div>
+        <div class="faq-answer">24-hour cancellation policy. Life happens, and I respect that. If you need to reschedule, just message me. I'm flexible because I know consistency matters more than perfection.</div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-question">What makes you different from other tutors?<span class="faq-arrow">&#x25BC;</span></div>
+        <div class="faq-answer">I don't just teach Korean. I build a system for you. Personalized curriculum, daily micro-tasks, detailed feedback within 24 hours, and between-class support. My goal is to make myself unnecessary. I want you to eventually fly on your own.</div>
+      </div>
+      <div class="faq-item reveal" onclick="toggleFaq(this)">
+        <div class="faq-question">Do I need any prior knowledge?<span class="faq-arrow">&#x25BC;</span></div>
+        <div class="faq-answer">No. Complete beginners are welcome. I'll teach you Hangul (the Korean alphabet) in our first few sessions. If you already know some Korean, great, we'll find your exact level and build from there.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     BOOKING FORM
+     ============================================ -->
+<section id="booking" class="section">
+  <div class="section-inner">
+    <h2 class="reveal" style="text-align:center;color:var(--rice);margin-bottom:0.5rem;">Book a Trial Lesson</h2>
+    <p class="reveal" style="text-align:center;opacity:0.5;margin-bottom:3rem;">No commitment. Just a conversation about your Korean journey.</p>
+
+    <form class="booking-form" id="bookingForm" onsubmit="handleSubmit(event)">
+      <div class="form-group reveal">
+        <label>Your Name</label>
+        <input type="text" name="name" required placeholder="How should I call you?">
+      </div>
+      <div class="form-group reveal">
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="your@email.com">
+      </div>
+      <div class="form-group reveal">
+        <label>Your Timezone</label>
+        <select name="timezone" required>
+          <option value="">Select timezone</option>
+          <option value="KST">KST (Seoul, UTC+9)</option>
+          <option value="EST">EST (New York, UTC-5)</option>
+          <option value="PST">PST (Los Angeles, UTC-8)</option>
+          <option value="GMT">GMT (London, UTC+0)</option>
+          <option value="CET">CET (Paris, UTC+1)</option>
+          <option value="SGT">SGT (Singapore, UTC+8)</option>
+          <option value="ACST">ACST (Adelaide, UTC+9.5)</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group reveal">
+        <label>Current Korean Level</label>
+        <select name="level" required>
+          <option value="">Select level</option>
+          <option value="none">Complete beginner (no Korean)</option>
+          <option value="hangul">Can read Hangul</option>
+          <option value="basic">Basic phrases and grammar</option>
+          <option value="intermediate">Intermediate (can hold basic conversations)</option>
+          <option value="advanced">Advanced (can discuss complex topics)</option>
+        </select>
+      </div>
+      <div class="form-group reveal">
+        <label>Your Goal</label>
+        <textarea name="goal" rows="3" placeholder="Why do you want to learn Korean? What's your dream?"></textarea>
+      </div>
+      <button type="submit" class="submit-btn reveal">Book My Trial Lesson</button>
+    </form>
+
+    <div class="booking-success" id="bookingSuccess">
+      <div class="success-check">&#x2714;</div>
+      <h3>Thank you!</h3>
+      <p style="opacity:0.7;">I'll review your information and get back to you within 24 hours to schedule our trial lesson.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>&copy; 2026 Uridle (우리들). Built with care by Jay.</p>
+  <p style="margin-top:0.5rem;"><a href="index.html">Read My Story</a></p>
+</footer>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+<script>
+/* Scroll Reveal */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* Scroll to booking */
+function scrollToBooking() {
+  document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* FAQ Toggle */
+function toggleFaq(item) {
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+/* Addon Panel */
+const addonData = {
+  pronunciation: {
+    icon: '&#x1F3A4;',
+    title: 'Pronunciation Clinic',
+    desc: 'Focused sessions on sounds that trip up non-native speakers. We use minimal pair drills, shadowing exercises, and my own voice recordings so you can compare directly.',
+    quote: '"I finally stopped hearing \'huh?\' every time I spoke Korean." — Student',
+    price: '+$8 per lesson'
+  },
+  writing: {
+    icon: '&#x270D;&#xFE0F;',
+    title: 'Writing Workshop',
+    desc: 'From Hangul basics to essay composition. Daily writing prompts with detailed corrections. I don\'t just mark errors, I explain the logic behind natural Korean writing.',
+    quote: '"My Korean texts went from robotic to natural in weeks." — Student',
+    price: '+$6 per lesson'
+  },
+  topik: {
+    icon: '&#x1F4DD;',
+    title: 'TOPIK Prep Module',
+    desc: 'Targeted preparation for TOPIK I or TOPIK II. Practice tests, time management strategies, and section-by-section optimization. I know the patterns inside out.',
+    quote: '"Went from TOPIK 3 to TOPIK 5 in 4 months." — Student',
+    price: '+$10 per lesson'
+  },
+  culture: {
+    icon: '&#x1F30F;',
+    title: 'Cultural Deep Dive',
+    desc: 'Weekly cultural context sessions. Why Koreans do what they do. Nunchi, hierarchy, food culture, workplace dynamics. The invisible layer that makes your Korean natural.',
+    quote: '"Now I don\'t just speak Korean. I understand Koreans." — Student',
+    price: '+$5 per lesson'
+  },
+  webapp: {
+    icon: '&#x1F4F1;',
+    title: 'Personal Web App',
+    desc: 'A custom sentence-builder and vocabulary review app, personalized with YOUR lesson content. Flashcards, tap-to-build exercises, and voice practice all from what we cover in class.',
+    quote: '"It\'s like having a mini tutor on my phone 24/7." — Student',
+    price: 'Included with Builder+ packages'
+  },
+  emergency: {
+    icon: '&#x1F198;',
+    title: 'Emergency Line',
+    desc: 'Direct message access for urgent Korean needs. Job interview prep, date help, important emails, visa documents. I respond within 2 hours during Korean business hours.',
+    quote: '"Jay helped me prep for my Korean job interview at 10pm. I got the job." — Student',
+    price: '+$15 per month'
+  }
+};
+
+function openAddon(key) {
+  const data = addonData[key];
+  if (!data) return;
+  document.getElementById('addonPanelContent').innerHTML = `
+    <div style="font-size:3rem;margin-bottom:0.5rem;">${data.icon}</div>
+    <h3>${data.title}</h3>
+    <p>${data.desc}</p>
+    <div class="quote">${data.quote}</div>
+    <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:var(--amber);">${data.price}</div>
+  `;
+  document.getElementById('addonPanel').classList.add('open');
+  document.getElementById('addonBackdrop').classList.add('visible');
+}
+
+function closeAddon() {
+  document.getElementById('addonPanel').classList.remove('open');
+  document.getElementById('addonBackdrop').classList.remove('visible');
+}
+
+/* Availability Heatmap */
+const kstSlots = [
+  { label: '8:00 AM', kst: 8 },
+  { label: '10:00 AM', kst: 10 },
+  { label: '2:00 PM', kst: 14 },
+  { label: '4:00 PM', kst: 16 },
+  { label: '7:00 PM', kst: 19 },
+  { label: '9:00 PM', kst: 21 }
+];
+
+const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+// Status: 'available' | 'moderate' | 'popular' | 'off' | 'lunch'
+const schedule = {
+  Mon: ['available','moderate','available','moderate','popular','available'],
+  Tue: ['off','off','off','off','off','off'],
+  Wed: ['available','popular','available','moderate','popular','moderate'],
+  Thu: ['moderate','available','available','available','popular','available'],
+  Fri: ['available','moderate','available','available','moderate','off'],
+  Sat: ['popular','moderate','available','available','off','off'],
+  Sun: ['off','off','moderate','moderate','off','off']
+};
+
+function formatTime(hour) {
+  if (hour < 0) hour += 24;
+  if (hour >= 24) hour -= 24;
+  const h = Math.floor(hour);
+  const m = (hour % 1) * 60;
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return m > 0 ? `${h12}:${String(Math.round(m)).padStart(2,'0')} ${ampm}` : `${h12}:00 ${ampm}`;
+}
+
+function setTimezone(offset) {
+  document.querySelectorAll('.tz-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderHeatmap(offset);
+}
+
+function renderHeatmap(tzOffset) {
+  const diff = tzOffset - 9; // diff from KST
+  const grid = document.getElementById('heatmap');
+  let html = '<div class="heatmap-header"></div>';
+
+  kstSlots.forEach(slot => {
+    const converted = slot.kst + diff;
+    html += `<div class="heatmap-header">${formatTime(converted)}</div>`;
+  });
+
+  days.forEach(day => {
+    html += `<div class="heatmap-day">${day}</div>`;
+    const statuses = schedule[day];
+    statuses.forEach(status => {
+      const label = status === 'off' ? '—' : status === 'available' ? 'Open' : status === 'moderate' ? 'Few' : 'Hot';
+      html += `<div class="heatmap-cell ${status}">${label}</div>`;
+    });
+  });
+
+  grid.innerHTML = html;
+}
+
+// Initial render
+renderHeatmap(9);
+
+/* Form Submit */
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('bookingForm');
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData);
+
+  // In production, POST to webhook here
+  console.log('Booking submission:', data);
+
+  form.style.display = 'none';
+  document.getElementById('bookingSuccess').classList.add('show');
+}
+</script>
+</body>
+</html>
