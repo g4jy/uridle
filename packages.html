@@ -52,14 +52,13 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 /* ============================================
    CONTINUOUS THREAD SVG
    ============================================ */
+body { position: relative; }
 .thread-svg {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 1000px;
-  height: 100%;
+  width: 60px;
   pointer-events: none;
   z-index: 0;
   overflow: visible;
@@ -68,8 +67,16 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   fill: none;
   stroke: var(--amber);
   stroke-width: 2;
-  stroke-dasharray: 8 6;
-  opacity: 0.3;
+  stroke-linecap: round;
+  opacity: 0.25;
+}
+.thread-line-glow {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.08;
+  filter: blur(3px);
 }
 
 /* ============================================
@@ -573,6 +580,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   </div>
 </nav>
 
+<!-- Continuous Thread SVG (generated dynamically by JS) -->
+<svg class="thread-svg" id="threadSvg" aria-hidden="true"></svg>
+
 <!-- ============================================
      HERO
      ============================================ -->
@@ -863,6 +873,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 <!-- ============================================
      SCRIPTS
      ============================================ -->
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
 <script>
 /* Scroll Reveal */
 const revealObserver = new IntersectionObserver((entries) => {
@@ -1012,6 +1026,121 @@ function renderHeatmap(tzOffset) {
 
 // Initial render
 renderHeatmap(9);
+
+/* ============ GSAP ScrollTrigger Enhancements ============ */
+gsap.registerPlugin(ScrollTrigger);
+
+// Waypoints: staggered entrance
+gsap.utils.toArray('.waypoint.reveal').forEach((wp, i) => {
+  gsap.from(wp, {
+    x: i % 2 === 0 ? -30 : 30,
+    opacity: 0,
+    duration: 0.7,
+    delay: i * 0.1,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: wp,
+      start: 'top 85%',
+      once: true
+    }
+  });
+});
+
+// Package cards: stagger with subtle scale
+gsap.utils.toArray('.package-card.reveal').forEach((card, i) => {
+  gsap.from(card, {
+    y: 40,
+    opacity: 0,
+    scale: 0.95,
+    duration: 0.6,
+    delay: i * 0.12,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: '.package-grid',
+      start: 'top 78%',
+      once: true
+    }
+  });
+});
+
+// Addon items: wave entrance
+gsap.utils.toArray('.addon-item.reveal').forEach((item, i) => {
+  gsap.from(item, {
+    y: 25,
+    opacity: 0,
+    duration: 0.5,
+    delay: i * 0.08,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: '.addon-grid',
+      start: 'top 80%',
+      once: true
+    }
+  });
+});
+
+// Continuous Thread SVG — draw on scroll
+(function createThread() {
+  const svg = document.getElementById('threadSvg');
+  if (!svg) return;
+
+  function buildThread() {
+    const pageH = document.documentElement.scrollHeight;
+    const heroBottom = document.getElementById('hero').offsetTop + document.getElementById('hero').offsetHeight;
+    const bookingTop = document.getElementById('booking').offsetTop;
+
+    svg.setAttribute('viewBox', '0 0 60 ' + pageH);
+    svg.style.height = pageH + 'px';
+
+    // Sinusoidal winding path from hero to booking
+    const startY = heroBottom;
+    const endY = bookingTop + 200;
+    const segments = 12;
+    const segH = (endY - startY) / segments;
+
+    let d = 'M 30 ' + startY;
+    for (let i = 0; i < segments; i++) {
+      const cx = i % 2 === 0 ? 10 : 50;
+      const y1 = startY + segH * i + segH * 0.5;
+      const y2 = startY + segH * (i + 1);
+      d += ' Q ' + cx + ' ' + Math.round(y1) + ' 30 ' + Math.round(y2);
+    }
+
+    svg.innerHTML = '<path class="thread-line-glow" d="' + d + '"/><path class="thread-line" id="threadPath" d="' + d + '"/>';
+
+    // Animate stroke-dashoffset on scroll
+    const path = document.getElementById('threadPath');
+    const glow = svg.querySelector('.thread-line-glow');
+    if (path) {
+      const len = path.getTotalLength();
+      gsap.set([path, glow], { strokeDasharray: len, strokeDashoffset: len });
+      gsap.to([path, glow], {
+        strokeDashoffset: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#how-it-works',
+          start: 'top bottom',
+          endTrigger: '#booking',
+          end: 'center center',
+          scrub: 1.5
+        }
+      });
+    }
+  }
+
+  // Build after fonts/layout settle
+  if (document.readyState === 'complete') {
+    buildThread();
+  } else {
+    window.addEventListener('load', buildThread);
+  }
+  // Rebuild on resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(buildThread, 250);
+  });
+})();
 
 /* Form Submit */
 function handleSubmit(e) {
