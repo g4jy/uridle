@@ -11,8 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Swiper CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<!-- Swiper CSS removed — using GSAP ScrollTrigger horizontal scroll -->
 
 <style>
 /* ============================================
@@ -48,7 +47,6 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -67,7 +65,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 .hand { font-family: var(--font-hand); }
 
 /* ============================================
-   STORYBOOK (Horizontal Swiper)
+   STORYBOOK (GSAP Horizontal Scroll)
    ============================================ */
 #storybook {
   width: 100vw;
@@ -77,14 +75,21 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   overflow: hidden;
 }
 
-.swiper { width: 100%; height: 100%; }
+.slides-track {
+  display: flex;
+  width: fit-content;
+  height: 100%;
+}
 
-.swiper-slide {
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  transition: background var(--duration-md) var(--ease-smooth);
+  flex-shrink: 0;
 }
 
 /* Slide layout */
@@ -182,28 +187,24 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   will-change: transform, opacity;
 }
 
-/* Swiper pagination */
-.swiper-pagination { bottom: 1.5rem !important; }
-.swiper-pagination-bullet {
-  width: 8px; height: 8px;
-  background: var(--ink);
-  opacity: 0.25;
-  transition: all var(--duration-sm) var(--ease-smooth);
+/* Storybook progress bar */
+.storybook-progress {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(300px, 60vw);
+  height: 3px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 2px;
+  z-index: 10;
 }
-.swiper-pagination-bullet-active {
-  opacity: 1;
+.storybook-progress-bar {
+  height: 100%;
   background: var(--amber);
-  width: 24px;
-  border-radius: 4px;
+  border-radius: 2px;
+  width: 0%;
 }
-
-/* Swiper navigation arrows */
-.swiper-button-next, .swiper-button-prev {
-  color: var(--amber) !important;
-  opacity: 0.6;
-  transition: opacity var(--duration-sm);
-}
-.swiper-button-next:hover, .swiper-button-prev:hover { opacity: 1; }
 
 /* Scroll hint */
 .scroll-hint {
@@ -660,23 +661,22 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   .slide-illustration { max-width: 280px; }
   .persona-grid { grid-template-columns: 1fr; }
   .system-timeline { padding-left: 2.5rem; }
-  .swiper-button-next, .swiper-button-prev { display: none !important; }
+  .slide-counter { right: 1rem; top: 1rem; }
 }
 </style>
 </head>
 <body>
 
 <!-- ============================================
-     STORYBOOK — Horizontal Swiper
+     STORYBOOK — GSAP Horizontal Scroll
      ============================================ -->
 <section id="storybook">
   <div class="slide-counter"><span id="slideNum">1</span> / <span id="slideTotal">24</span></div>
 
-  <div class="swiper" id="storySwiper">
-    <div class="swiper-wrapper">
+  <div class="slides-track" id="slidesTrack">
 
       <!-- ACT 1: The Care That Broke You -->
-      <div class="swiper-slide slide--warm act1">
+      <div class="slide slide--warm act1">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F3EB;</span></div>
           <div class="slide-text">
@@ -686,7 +686,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act1">
+      <div class="slide slide--warm act1">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F3C6;</span></div>
           <div class="slide-text">
@@ -697,7 +697,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act1">
+      <div class="slide slide--warm act1">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F4DE;</span></div>
           <div class="slide-text">
@@ -707,7 +707,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act1">
+      <div class="slide slide--warm act1">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F614;</span></div>
           <div class="slide-text">
@@ -718,7 +718,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--dark act1">
+      <div class="slide slide--dark act1">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F4A8;</span></div>
           <div class="slide-text">
@@ -730,7 +730,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
       </div>
 
       <!-- ACT 2: The World -->
-      <div class="swiper-slide slide--sage act2">
+      <div class="slide slide--sage act2">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x2708;&#xFE0F;</span></div>
           <div class="slide-text">
@@ -740,7 +740,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--sage act2">
+      <div class="slide slide--sage act2">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F4AC;</span></div>
           <div class="slide-text">
@@ -752,7 +752,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--sage act2">
+      <div class="slide slide--sage act2">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F30D;</span></div>
           <div class="slide-text">
@@ -762,7 +762,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--amber act2">
+      <div class="slide slide--amber act2">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F4A1;</span></div>
           <div class="slide-text">
@@ -774,7 +774,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
       </div>
 
       <!-- ACT 3: The Ugly Truth -->
-      <div class="swiper-slide slide--warm act3">
+      <div class="slide slide--warm act3">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F4F1;</span></div>
           <div class="slide-text">
@@ -784,7 +784,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act3">
+      <div class="slide slide--warm act3">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F645;</span></div>
           <div class="slide-text">
@@ -794,7 +794,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act3">
+      <div class="slide slide--warm act3">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x26A0;&#xFE0F;</span></div>
           <div class="slide-text">
@@ -804,7 +804,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--amber act3">
+      <div class="slide slide--amber act3">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F525;</span></div>
           <div class="slide-text">
@@ -815,7 +815,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
       </div>
 
       <!-- ACT 4: The Frustration -->
-      <div class="swiper-slide slide--warm act4">
+      <div class="slide slide--warm act4">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F4BB;</span></div>
           <div class="slide-text">
@@ -825,7 +825,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act4">
+      <div class="slide slide--warm act4">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F622;</span></div>
           <div class="slide-text">
@@ -835,7 +835,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--amber act4">
+      <div class="slide slide--amber act4">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F4AA;</span></div>
           <div class="slide-text">
@@ -846,7 +846,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
       </div>
 
       <!-- ACT 5: The Build -->
-      <div class="swiper-slide slide--warm act5">
+      <div class="slide slide--warm act5">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F3D7;&#xFE0F;</span></div>
           <div class="slide-text">
@@ -856,7 +856,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act5">
+      <div class="slide slide--warm act5">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F50D;</span></div>
           <div class="slide-text">
@@ -866,7 +866,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--warm act5">
+      <div class="slide slide--warm act5">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F504;</span></div>
           <div class="slide-text">
@@ -876,7 +876,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--sage act5">
+      <div class="slide slide--sage act5">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F3AF;</span></div>
           <div class="slide-text">
@@ -888,7 +888,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
       </div>
 
       <!-- ACT 6: The Vision -->
-      <div class="swiper-slide slide--warm act6">
+      <div class="slide slide--warm act6">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F310;</span></div>
           <div class="slide-text">
@@ -898,7 +898,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--sage act6">
+      <div class="slide slide--sage act6">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F91D;</span></div>
           <div class="slide-text">
@@ -908,7 +908,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--sage act6">
+      <div class="slide slide--sage act6">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon">&#x1F3D8;&#xFE0F;</span></div>
           <div class="slide-text">
@@ -918,7 +918,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
         </div>
       </div>
 
-      <div class="swiper-slide slide--dark act6" id="finalSlide">
+      <div class="slide slide--dark act6" id="finalSlide">
         <div class="slide-inner">
           <div class="slide-illustration"><span class="placeholder-icon" style="font-size:5rem;">&#x1F30F;</span></div>
           <div class="slide-text">
@@ -931,12 +931,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 
     </div>
 
-    <div class="swiper-pagination"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
-  </div>
-
-  <div class="scroll-hint" id="scrollHint">swipe or scroll &rarr;</div>
+  <div class="storybook-progress"><div class="storybook-progress-bar" id="storyProgress"></div></div>
+  <div class="scroll-hint" id="scrollHint">scroll to explore &darr;</div>
 </section>
 
 <!-- ============================================
@@ -1193,59 +1189,83 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
 
-<!-- Swiper -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-/* Swiper Init */
-const swiper = new Swiper('#storySwiper', {
-  direction: 'horizontal',
-  slidesPerView: 1,
-  spaceBetween: 0,
-  speed: 600,
-  mousewheel: { forceToAxis: true, sensitivity: 1 },
-  keyboard: { enabled: true },
-  pagination: { el: '.swiper-pagination', clickable: true },
-  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-  on: {
-    slideChange: function() {
-      document.getElementById('slideNum').textContent = this.activeIndex + 1;
-      // Hide scroll hint after first slide
-      if (this.activeIndex > 0) {
-        document.getElementById('scrollHint').style.opacity = '0';
-      }
-      // On last slide, allow vertical scroll
-      if (this.isEnd) {
-        document.body.style.overflow = 'auto';
-      }
+gsap.registerPlugin(ScrollTrigger);
+
+/* ============ GSAP Horizontal Scroll Storybook ============ */
+const track = document.getElementById('slidesTrack');
+const slides = gsap.utils.toArray('.slide');
+const slideCounter = document.getElementById('slideNum');
+const progressBar = document.getElementById('storyProgress');
+const scrollHint = document.getElementById('scrollHint');
+
+// Set total slide count
+document.getElementById('slideTotal').textContent = slides.length;
+
+// Horizontal scroll: pin storybook, scroll down = slides move left
+const storyTl = gsap.to(track, {
+  x: () => -(track.scrollWidth - window.innerWidth),
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '#storybook',
+    pin: true,
+    scrub: 1,
+    end: () => '+=' + (track.scrollWidth - window.innerWidth),
+    snap: {
+      snapTo: 1 / (slides.length - 1),
+      duration: { min: 0.2, max: 0.4 },
+      ease: 'power1.inOut'
     },
-    reachEnd: function() {
-      // Enable vertical scrolling when storybook ends
-      setTimeout(() => { document.body.style.overflow = 'auto'; }, 800);
+    onUpdate: (self) => {
+      // Update progress bar
+      if (progressBar) progressBar.style.width = (self.progress * 100) + '%';
+
+      // Update slide counter
+      const idx = Math.round(self.progress * (slides.length - 1));
+      if (slideCounter) slideCounter.textContent = idx + 1;
+
+      // Fade scroll hint after scrolling starts
+      if (scrollHint && self.progress > 0.01) {
+        scrollHint.style.opacity = '0';
+      }
     }
   }
 });
 
-// Lock vertical scroll during storybook
-document.body.style.overflow = 'hidden';
+// Slide entrance animations: each slide fades in as it enters viewport
+slides.forEach((slide) => {
+  const illus = slide.querySelector('.slide-illustration');
+  const text = slide.querySelector('.slide-text');
 
-// Also unlock on scroll down from last slide
-let lastSlideScrollCount = 0;
-document.getElementById('storybook').addEventListener('wheel', (e) => {
-  if (swiper.isEnd && e.deltaY > 0) {
-    lastSlideScrollCount++;
-    if (lastSlideScrollCount > 2) {
-      document.body.style.overflow = 'auto';
-      document.getElementById('pyramid').scrollIntoView({ behavior: 'smooth' });
+  gsap.from(illus, {
+    scale: 0.88,
+    opacity: 0,
+    duration: 0.6,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: slide,
+      containerAnimation: storyTl,
+      start: 'left 80%',
+      toggleActions: 'play none none reverse'
     }
-  } else {
-    lastSlideScrollCount = 0;
-  }
+  });
+
+  gsap.from(text, {
+    y: 30,
+    opacity: 0,
+    duration: 0.5,
+    delay: 0.1,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: slide,
+      containerAnimation: storyTl,
+      start: 'left 75%',
+      toggleActions: 'play none none reverse'
+    }
+  });
 });
 
-// Update total slide count
-document.getElementById('slideTotal').textContent = swiper.slides.length;
-
-/* Scroll Reveal (IntersectionObserver) */
+/* ============ Scroll Reveal (IntersectionObserver) ============ */
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -1256,21 +1276,18 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-/* Persona Toggle */
+/* ============ Persona Toggle ============ */
 function togglePersona(card) {
   const wasActive = card.classList.contains('active');
-  // Close all
   document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('active'));
-  // Toggle clicked
   if (!wasActive) {
     card.classList.add('active');
   }
-  // Show after-message if any card was opened
   const anyOpened = document.querySelector('.persona-card.active');
   document.getElementById('personaAfter').classList.toggle('visible', !!anyOpened);
 }
 
-/* Philosophy Circles */
+/* ============ Philosophy Circles ============ */
 function showPhilosophy(which) {
   const details = ['culture', 'structure', 'sounds'];
   const circles = document.querySelectorAll('.circle');
@@ -1306,32 +1323,11 @@ document.querySelectorAll('.philosophy-content li').forEach(li => {
   const color = getComputedStyle(li).getPropertyValue('--dot-color').trim();
   li.style.setProperty('--dot-bg', color);
 });
-// Add CSS for bullet
 const bulletStyle = document.createElement('style');
 bulletStyle.textContent = `.philosophy-content li::before { background: var(--dot-bg, var(--amber)); }`;
 document.head.appendChild(bulletStyle);
 
 /* ============ GSAP ScrollTrigger Enhancements ============ */
-gsap.registerPlugin(ScrollTrigger);
-
-// Storybook: slide entrance parallax effect
-swiper.on('slideChangeTransitionStart', function() {
-  const active = this.slides[this.activeIndex];
-  const illus = active.querySelector('.slide-illustration');
-  const text = active.querySelector('.slide-text');
-  if (illus) {
-    gsap.fromTo(illus,
-      { scale: 0.88, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.7, ease: 'power3.out' }
-    );
-  }
-  if (text) {
-    gsap.fromTo(text,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, delay: 0.12, ease: 'power3.out' }
-    );
-  }
-});
 
 // Pyramid peak: elastic bounce entrance
 ScrollTrigger.create({
