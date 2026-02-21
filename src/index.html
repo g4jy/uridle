@@ -156,11 +156,30 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 .act5 .slide-illustration::before { background: linear-gradient(135deg, var(--amber-soft), var(--sage-soft)); }
 .act6 .slide-illustration::before { background: linear-gradient(135deg, var(--lavender-soft), var(--sage-soft)); }
 
+/* Paper texture overlay */
+.slide-illustration::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.12;
+  z-index: 2;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+}
+
 /* Illustration placeholder icon */
 .slide-illustration .placeholder-icon {
   font-size: 4rem;
   opacity: 0.3;
   z-index: 1;
+}
+
+/* GSAP slide entrance animation states */
+.slide-illustration,
+.slide-text {
+  will-change: transform, opacity;
 }
 
 /* Swiper pagination */
@@ -561,6 +580,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   bottom: 0;
   width: 2px;
   background: linear-gradient(180deg, var(--amber), var(--sage), var(--lavender));
+  transform-origin: top;
+  transform: scaleY(var(--line-progress, 0));
+  transition: transform 0.1s linear;
 }
 
 .system-phase {
@@ -1167,6 +1189,11 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 <!-- ============================================
      SCRIPTS
      ============================================ -->
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+<!-- Swiper -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 /* Swiper Init */
@@ -1283,6 +1310,81 @@ document.querySelectorAll('.philosophy-content li').forEach(li => {
 const bulletStyle = document.createElement('style');
 bulletStyle.textContent = `.philosophy-content li::before { background: var(--dot-bg, var(--amber)); }`;
 document.head.appendChild(bulletStyle);
+
+/* ============ GSAP ScrollTrigger Enhancements ============ */
+gsap.registerPlugin(ScrollTrigger);
+
+// Storybook: slide entrance parallax effect
+swiper.on('slideChangeTransitionStart', function() {
+  const active = this.slides[this.activeIndex];
+  const illus = active.querySelector('.slide-illustration');
+  const text = active.querySelector('.slide-text');
+  if (illus) {
+    gsap.fromTo(illus,
+      { scale: 0.88, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.7, ease: 'power3.out' }
+    );
+  }
+  if (text) {
+    gsap.fromTo(text,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, delay: 0.12, ease: 'power3.out' }
+    );
+  }
+});
+
+// Pyramid peak: elastic bounce entrance
+ScrollTrigger.create({
+  trigger: '.pyramid-peak',
+  start: 'top 88%',
+  once: true,
+  onEnter: () => {
+    gsap.from('.pyramid-peak', {
+      scale: 0.4,
+      opacity: 0,
+      duration: 1,
+      ease: 'elastic.out(1, 0.4)'
+    });
+  }
+});
+
+// Philosophy circles: gentle breathing
+gsap.to('.circle-outer', {
+  scale: 1.02, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut',
+  scrollTrigger: { trigger: '#philosophy', start: 'top 80%' }
+});
+gsap.to('.circle-middle', {
+  scale: 1.03, duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.4,
+  scrollTrigger: { trigger: '#philosophy', start: 'top 80%' }
+});
+gsap.to('.circle-inner', {
+  scale: 1.04, duration: 2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.8,
+  scrollTrigger: { trigger: '#philosophy', start: 'top 80%' }
+});
+
+// System timeline: draw the line as you scroll
+ScrollTrigger.create({
+  trigger: '.system-timeline',
+  start: 'top 75%',
+  end: 'bottom 50%',
+  onUpdate: (self) => {
+    const line = document.querySelector('.system-timeline');
+    if (line) line.style.setProperty('--line-progress', self.progress);
+  }
+});
+
+// CTA button: attention pulse
+ScrollTrigger.create({
+  trigger: '#cta',
+  start: 'top 70%',
+  once: true,
+  onEnter: () => {
+    gsap.fromTo('#cta .cta-btn',
+      { boxShadow: '0 0 0 0 rgba(232,152,62,0.6)' },
+      { boxShadow: '0 0 0 30px rgba(232,152,62,0)', duration: 1.2, repeat: 2, ease: 'power2.out' }
+    );
+  }
+});
 </script>
 </body>
 </html>

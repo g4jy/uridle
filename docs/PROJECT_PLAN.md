@@ -1,7 +1,7 @@
 # Uridle (우리들) — Project Plan & Workflow
 
 > **Last Updated**: 2026-02-21
-> **Status**: Planning → Implementation
+> **Status**: Phase 0-3 DONE → Phase 4 (Illustrations & Polish) next
 > **Repository**: `G:\내 드라이브\uridle\`
 
 ---
@@ -532,41 +532,44 @@ ScrollTrigger — included with GSAP
 - [x] Install GSAP Master MCP server
 - [x] Research marketplace tools (comprehensive report)
 - [x] Analyze Instagram cultural design insight
+- [x] Set up local preview workflow (Python HTTP server, Playwright verification)
 - [ ] Install Frontend Design plugin (needs `/plugin` interactive command)
-- [ ] Set up local preview workflow
 
-### Phase 1: Page 1 — Storybook
-- [ ] Create `src/index.html` base structure + CSS design system
-- [ ] Implement Swiper.js horizontal storybook container
-- [ ] Write storybook slides Act 1 (Slides 1-5: The Care That Broke You)
-- [ ] Write storybook slides Act 2 (Slides 6-9: The World)
-- [ ] Write storybook slides Act 3 (Slides 10-13: The Ugly Truth)
-- [ ] Write storybook slides Act 4 (Slides 14-16: The Frustration)
-- [ ] Write storybook slides Act 5 (Slides 17-20: The Build)
-- [ ] Write storybook slides Act 6 (Slides 21-24+: The Vision)
-- [ ] Create SVG illustrations for each slide (placeholder → AI-generated → refined)
-- [ ] Add slide transition animations (background color shifts, parallax)
-- [ ] Test storybook navigation (keyboard, mouse, touch, swipe)
+### Phase 1: Page 1 — Storybook [DONE]
+- [x] Create `src/index.html` base structure + CSS design system
+- [x] Implement Swiper.js horizontal storybook container
+- [x] Write storybook slides Act 1 (Slides 1-5: The Care That Broke You)
+- [x] Write storybook slides Act 2 (Slides 6-9: The World)
+- [x] Write storybook slides Act 3 (Slides 10-13: The Ugly Truth)
+- [x] Write storybook slides Act 4 (Slides 14-16: The Frustration)
+- [x] Write storybook slides Act 5 (Slides 17-20: The Build)
+- [x] Write storybook slides Act 6 (Slides 21-24: The Vision)
+- [x] Emoji placeholders for illustrations (SVG generation in Phase 4)
+- [ ] Add slide transition animations (background color shifts, parallax via GSAP)
+- [x] Test storybook navigation (Playwright verified: all 24 slides render)
 
-### Phase 2: Page 1 — Vertical Sections
-- [ ] Implement Planetono-style background color transitions (CSS custom properties + ScrollTrigger)
-- [ ] Build Pyramid section with staggered reveal animation
-- [ ] Build 6 Persona Comparison cards with flip/expand interaction
-- [ ] Build Philosophy concentric circles (CSS + click interaction)
-- [ ] Build System overview with scroll-reveal phases + sticky progress dots
-- [ ] Build Social Proof + CTA section
-- [ ] Cross-link to Page 2
+### Phase 2: Page 1 — Vertical Sections [DONE]
+- [x] Build Pyramid section with staggered reveal animation (IntersectionObserver)
+- [x] Build 6 Persona Comparison cards with expand interaction + 본질 twist
+- [x] Build Philosophy concentric circles (CSS + click interaction)
+- [x] Build System overview with scroll-reveal phases (5 phases)
+- [x] Build CTA section
+- [x] Cross-link to Page 2
+- [ ] Implement Planetono-style background color transitions (GSAP ScrollTrigger — Phase 4)
+- [ ] Sticky progress dots for system section (Phase 4)
 
-### Phase 3: Page 2 — The System
-- [ ] Create `src/packages.html` base structure
-- [ ] Implement continuous thread SVG (animated stroke-dashoffset)
-- [ ] Build Hero + How It Works (5 waypoints)
-- [ ] Build Package cards (4 tiers)
-- [ ] Build Addon builder with slide-in detail panels
-- [ ] Build Availability heatmap (timezone-aware)
-- [ ] Build FAQ accordion
-- [ ] Build Booking form + preference collector + webhook
-- [ ] Cross-link back to Page 1
+### Phase 3: Page 2 — The System [DONE]
+- [x] Create `src/packages.html` base structure
+- [x] Build Hero + How It Works (5 waypoints with colored number circles)
+- [x] Build Package cards (3 tiers: Starter/Builder/Accelerator)
+- [x] Build Addon builder with slide-in detail panels (6 addons, backdrop blur)
+- [x] Build Availability heatmap (7 timezones, color-coded cells, Tuesday blocked)
+- [x] Build FAQ accordion (6 questions)
+- [x] Build Booking form with success state
+- [x] Cross-link back to Page 1
+- [x] Playwright verification: all sections render, timezone switching works, addon panels open/close
+- [ ] Implement continuous thread SVG (animated stroke-dashoffset — Phase 4)
+- [ ] Webhook integration for form submission (Phase 5)
 
 ### Phase 4: Illustrations & Polish
 - [ ] Generate AI SVG illustrations for all 24+ storybook slides
