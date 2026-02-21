@@ -11,8 +11,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Swiper CSS removed — using GSAP ScrollTrigger horizontal scroll -->
-
 <style>
 /* ============================================
    DESIGN SYSTEM
@@ -242,8 +240,13 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
    ============================================ */
 .section {
   padding: 6rem 2rem;
-  transition: background var(--duration-md) var(--ease-smooth);
   position: relative;
+}
+
+/* Gradient bridge: dark → light between pyramid and personas */
+.section-bridge {
+  height: 12rem;
+  background: linear-gradient(180deg, #2a3350 0%, var(--rice) 100%);
 }
 
 .section-inner {
@@ -266,7 +269,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 /* ============================================
    PYRAMID SECTION
    ============================================ */
-#pyramid { background: var(--midnight); color: var(--rice); }
+#pyramid {
+  background: linear-gradient(180deg, var(--midnight) 0%, var(--midnight) 80%, #2a3350 100%);
+  color: var(--rice);
+}
 
 .pyramid-hook {
   text-align: center;
@@ -338,9 +344,11 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 }
 
 /* ============================================
-   PERSONA COMPARISON SECTION
+   PERSONA FLIP CARDS
    ============================================ */
-#personas { background: var(--rice); }
+#personas {
+  background: transparent;
+}
 
 .persona-intro {
   text-align: center;
@@ -348,93 +356,111 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 }
 .persona-intro h2 {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .persona-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
+  perspective: 1200px;
 }
 
 .persona-card {
-  background: white;
+  height: 320px;
+  cursor: pointer;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s var(--ease-smooth);
+}
+.persona-card.flipped {
+  transform: rotateY(180deg);
+}
+.persona-card.featured .card-front {
+  border: 2px solid var(--amber);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
   border-radius: 1.25rem;
   padding: 2rem;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all var(--duration-sm) var(--ease-smooth);
-  position: relative;
-  overflow: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
-.persona-card:hover {
-  transform: translateY(-4px);
+
+.card-front {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.card-front:hover {
   box-shadow: 0 12px 40px rgba(0,0,0,0.08);
 }
-.persona-card.active {
-  border-color: var(--amber);
+
+.card-back {
+  background: var(--midnight);
+  color: var(--rice);
+  transform: rotateY(180deg);
+  justify-content: flex-start;
+  text-align: left;
+  gap: 1rem;
+  overflow-y: auto;
 }
 
-.persona-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
+.card-emoji {
+  font-size: 2.5rem;
   margin-bottom: 1rem;
 }
 
-.persona-title {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.persona-desc {
-  font-size: 0.9rem;
-  opacity: 0.7;
-  margin-bottom: 1rem;
-}
-
-.persona-cta {
+.card-thought {
   font-family: var(--font-hand);
-  font-size: 1.1rem;
-  color: var(--amber);
-  font-weight: 600;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: var(--ink);
+  line-height: 1.4;
 }
 
-/* Expanded state */
-.persona-reveal {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s var(--ease-smooth), padding 0.3s;
-  padding: 0;
-}
-.persona-card.active .persona-reveal {
-  max-height: 500px;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(0,0,0,0.08);
-  margin-top: 1rem;
-}
-
-.persona-think, .persona-twist {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 0.75rem;
+.card-tap {
+  font-family: var(--font-hand);
   font-size: 0.95rem;
+  color: var(--card-accent, var(--amber));
+  margin-top: auto;
+  opacity: 0.6;
+  animation: pulse-hint 2s ease-in-out infinite;
+}
+
+.card-reality {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.card-reality::before {
+  content: 'What you\'re really doing:';
+  display: block;
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  color: var(--card-accent, var(--amber));
+  margin-bottom: 0.4rem;
+}
+
+.card-need {
+  font-size: 0.9rem;
   line-height: 1.6;
 }
-.persona-think {
-  background: #f5f5f5;
+.card-need::before {
+  content: 'What you actually need:';
+  display: block;
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  color: var(--amber);
+  margin-bottom: 0.4rem;
 }
-.persona-think::before { content: 'What you think: '; font-weight: 600; color: var(--ink); }
-.persona-twist {
-  background: var(--amber-soft);
-  border-left: 3px solid var(--amber);
-}
-.persona-twist::before { content: 'What you actually need: '; font-weight: 600; color: var(--terracotta); }
 
 .persona-after {
   text-align: center;
@@ -448,186 +474,13 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 .persona-after.visible { opacity: 1; }
 
 /* ============================================
-   PHILOSOPHY SECTION (Concentric Circles)
-   ============================================ */
-#philosophy {
-  background: linear-gradient(180deg, var(--rice) 0%, #e8f0ec 100%);
-}
-
-.philosophy-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.circles-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem 0;
-  position: relative;
-}
-
-.circle {
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--duration-sm) var(--ease-smooth);
-  position: absolute;
-}
-
-.circle-outer {
-  width: min(360px, 85vw);
-  height: min(360px, 85vw);
-  border: 3px solid var(--amber);
-  background: var(--amber-soft);
-}
-.circle-middle {
-  width: min(240px, 57vw);
-  height: min(240px, 57vw);
-  border: 3px solid var(--sage);
-  background: var(--sage-soft);
-  z-index: 1;
-}
-.circle-inner {
-  width: min(120px, 28vw);
-  height: min(120px, 28vw);
-  border: 3px solid var(--terracotta);
-  background: var(--terracotta-soft);
-  z-index: 2;
-}
-
-.circle:hover { transform: scale(1.05); }
-.circle.active { transform: scale(1.08); }
-.circle.active.circle-outer { box-shadow: 0 0 30px var(--amber-soft); }
-.circle.active.circle-middle { box-shadow: 0 0 30px var(--sage-soft); }
-.circle.active.circle-inner { box-shadow: 0 0 30px var(--terracotta-soft); }
-
-.circle-label {
-  font-family: var(--font-display);
-  font-size: clamp(0.8rem, 2vw, 1.1rem);
-  font-weight: 600;
-  text-align: center;
-  pointer-events: none;
-}
-
-/* Need min-height for circle container */
-.circles-wrapper {
-  position: relative;
-  width: min(360px, 85vw);
-  height: min(360px, 85vw);
-  margin: 0 auto;
-}
-
-.philosophy-detail {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s var(--ease-smooth);
-  margin-top: 2rem;
-}
-.philosophy-detail.open {
-  max-height: 600px;
-}
-
-.philosophy-content {
-  background: white;
-  border-radius: 1rem;
-  padding: 2rem;
-  border-left: 4px solid var(--amber);
-}
-.philosophy-content h3 {
-  margin-bottom: 1rem;
-  font-size: 1.3rem;
-}
-.philosophy-content ul {
-  list-style: none;
-  padding: 0;
-}
-.philosophy-content li {
-  padding: 0.5rem 0;
-  padding-left: 1.5rem;
-  position: relative;
-  line-height: 1.6;
-}
-.philosophy-content li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.85rem;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-/* ============================================
-   SYSTEM SECTION (Scroll Reveal)
-   ============================================ */
-#system {
-  background: linear-gradient(180deg, #e8f0ec 0%, var(--rice) 100%);
-}
-
-.system-header { text-align: center; margin-bottom: 3rem; }
-
-.system-timeline {
-  position: relative;
-  padding-left: 3rem;
-}
-.system-timeline::before {
-  content: '';
-  position: absolute;
-  left: 0.75rem;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(180deg, var(--amber), var(--sage), var(--lavender));
-  transform-origin: top;
-  transform: scaleY(var(--line-progress, 0));
-  transition: transform 0.1s linear;
-}
-
-.system-phase {
-  position: relative;
-  margin-bottom: 3rem;
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: all 0.6s var(--ease-smooth);
-}
-.system-phase.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.system-dot {
-  position: absolute;
-  left: -2.5rem;
-  top: 0.25rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  background: var(--amber);
-  border: 3px solid var(--rice);
-  z-index: 1;
-}
-
-.system-phase h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-.system-phase p {
-  font-size: 0.95rem;
-  opacity: 0.8;
-  line-height: 1.6;
-}
-
-/* ============================================
    CTA SECTION
    ============================================ */
 #cta {
-  background: var(--midnight);
+  background: linear-gradient(180deg, var(--rice) 0%, var(--midnight) 25%, var(--midnight) 100%);
   color: var(--rice);
   text-align: center;
-  padding: 6rem 2rem;
+  padding: 8rem 2rem 6rem;
 }
 
 .cta-inner h2 {
@@ -660,8 +513,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   .slide-inner { gap: 1.5rem; padding: 0 0.5rem; }
   .slide-illustration { max-width: 280px; }
   .persona-grid { grid-template-columns: 1fr; }
-  .system-timeline { padding-left: 2.5rem; }
+  .persona-card { height: 280px; }
   .slide-counter { right: 1rem; top: 1rem; }
+  .section-bridge { height: 8rem; }
 }
 </style>
 </head>
@@ -941,232 +795,131 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 <section id="pyramid" class="section">
   <div class="section-inner">
     <div class="pyramid-hook reveal">
-      <h2>Millions say they want to learn Korean...</h2>
+      <h2>Everyone loves Korean culture.<br>But how far have you gone?</h2>
     </div>
 
     <div class="pyramid-visual">
       <div class="pyramid-level reveal" style="transition-delay:0.1s">
-        <div class="level-bar" style="width:90%;background:rgba(255,255,255,0.1);max-width:500px;"></div>
-        <div class="level-count">Millions</div>
-        <div class="level-label">Watching K-Drama with subtitles</div>
+        <div class="level-bar" style="width:95%;background:rgba(255,255,255,0.08);max-width:540px;"></div>
+        <div class="level-count">240M+</div>
+        <div class="level-label">Watching K-content on Netflix alone</div>
       </div>
       <div class="pyramid-level reveal" style="transition-delay:0.2s">
-        <div class="level-bar" style="width:70%;background:rgba(255,255,255,0.15);max-width:400px;"></div>
-        <div class="level-count">~100K</div>
-        <div class="level-label">Downloaded a language app</div>
+        <div class="level-bar" style="width:75%;background:rgba(255,255,255,0.12);max-width:420px;"></div>
+        <div class="level-count">17M+</div>
+        <div class="level-label">Learning Korean on language apps</div>
       </div>
-      <div class="pyramid-level reveal" style="transition-delay:0.3s">
-        <div class="level-bar" style="width:50%;background:rgba(255,255,255,0.2);max-width:300px;"></div>
-        <div class="level-count">~10K</div>
-        <div class="level-label">Bought a textbook</div>
-      </div>
-      <div class="pyramid-level reveal" style="transition-delay:0.4s">
-        <div class="level-bar" style="width:35%;background:rgba(255,255,255,0.25);max-width:220px;"></div>
-        <div class="level-count">~1K</div>
-        <div class="level-label">Took a structured class</div>
+      <div class="pyramid-level reveal" style="transition-delay:0.35s">
+        <div class="level-bar" style="width:50%;background:rgba(255,255,255,0.18);max-width:300px;"></div>
+        <div class="level-count">550K+</div>
+        <div class="level-label">Taking structured exams &amp; classes</div>
       </div>
       <div class="pyramid-level reveal" style="transition-delay:0.5s">
-        <div class="level-bar" style="width:20%;background:rgba(255,255,255,0.3);max-width:140px;"></div>
-        <div class="level-count">~100</div>
-        <div class="level-label">Studying regularly</div>
+        <div class="level-bar" style="width:30%;background:rgba(255,255,255,0.25);max-width:200px;"></div>
+        <div class="level-count">~200K</div>
+        <div class="level-label">Studying Korean every week</div>
       </div>
       <div class="pyramid-level pyramid-peak reveal" style="transition-delay:0.7s">
-        <div class="level-count" style="font-size:2rem;">Top 1%</div>
+        <div class="level-count" style="font-size:2rem;">~50K</div>
         <div class="level-label" style="opacity:1;font-weight:500;">Seeking a personal tutor</div>
       </div>
     </div>
 
     <div class="pyramid-closure reveal" style="transition-delay:0.9s">
-      You're here. You already made the hardest choice.
+      You're here. Out of 240 million, you chose to go deeper.
     </div>
   </div>
 </section>
 
+<div class="section-bridge"></div>
+
 <!-- ============================================
-     PERSONA COMPARISON SECTION
+     PERSONA SECTION — Flip Cards
      ============================================ -->
 <section id="personas" class="section">
   <div class="section-inner">
-    <div class="persona-intro reveal">
-      <h2>Which one sounds like you?</h2>
-      <p style="opacity:0.7;max-width:600px;margin:0 auto;">Everyone's path to Korean is different. Find yours.</p>
+    <div class="persona-intro">
+      <h2>Tap the one that sounds like you.</h2>
     </div>
 
     <div class="persona-grid">
 
-      <div class="persona-card reveal" onclick="togglePersona(this)">
-        <div class="persona-icon" style="background:var(--lavender-soft);">&#x1F3AC;</div>
-        <div class="persona-title">The K-Drama Discoverer</div>
-        <div class="persona-desc">You binge K-dramas and pick up phrases naturally.</div>
-        <div class="persona-cta">Is this you? &darr;</div>
-        <div class="persona-reveal">
-          <div class="persona-think">&ldquo;I just need more content and I'll get fluent.&rdquo;</div>
-          <div class="persona-twist">You've built incredible listening intuition. What you actually need is someone to organize that raw material into a system you can speak with.</div>
+      <div class="persona-card" onclick="flipCard(this)">
+        <div class="card-face card-front" style="--card-accent:var(--lavender);">
+          <div class="card-emoji">&#x1F3AC;</div>
+          <div class="card-thought">&ldquo;I'll get fluent just watching more K-dramas.&rdquo;</div>
+          <div class="card-tap">tap me</div>
+        </div>
+        <div class="card-face card-back" style="--card-accent:var(--lavender);">
+          <div class="card-reality">You pause and replay the same scene 5 times. You understand the vibe, but can't say a full sentence without freezing.</div>
+          <div class="card-need">You've built incredible listening intuition. Now you need someone to organize that raw material into a system you can actually speak with.</div>
         </div>
       </div>
 
-      <div class="persona-card reveal" onclick="togglePersona(this)">
-        <div class="persona-icon" style="background:var(--sage-soft);">&#x1F525;</div>
-        <div class="persona-title">The App Streak Keeper</div>
-        <div class="persona-desc">Your 200-day streak is your pride and joy.</div>
-        <div class="persona-cta">Is this you? &darr;</div>
-        <div class="persona-reveal">
-          <div class="persona-think">&ldquo;If I just keep going, I'll become fluent.&rdquo;</div>
-          <div class="persona-twist">You've proven you can show up every day &mdash; that's the hardest part. What you actually need is to use that discipline on content that matches YOUR specific goals, not a generic algorithm.</div>
+      <div class="persona-card" onclick="flipCard(this)">
+        <div class="card-face card-front" style="--card-accent:var(--sage);">
+          <div class="card-emoji">&#x1F525;</div>
+          <div class="card-thought">&ldquo;200-day streak. I'm basically fluent soon.&rdquo;</div>
+          <div class="card-tap">tap me</div>
+        </div>
+        <div class="card-face card-back" style="--card-accent:var(--sage);">
+          <div class="card-reality">You can match pictures to words perfectly. But when someone speaks to you in Korean, your mind goes blank.</div>
+          <div class="card-need">You've proven you can show up every day &mdash; that's the hardest part. Now use that discipline on content that matches YOUR goals, not a generic algorithm.</div>
         </div>
       </div>
 
-      <div class="persona-card reveal" onclick="togglePersona(this)">
-        <div class="persona-icon" style="background:var(--amber-soft);">&#x1F4AC;</div>
-        <div class="persona-title">The Conversation Seeker</div>
-        <div class="persona-desc">You've found Korean friends on HelloTalk and Tandem.</div>
-        <div class="persona-cta">Is this you? &darr;</div>
-        <div class="persona-reveal">
-          <div class="persona-think">&ldquo;I just need more conversation practice.&rdquo;</div>
-          <div class="persona-twist">You've built real cultural connections. What you actually need isn't more conversation &mdash; it's someone who can tell you exactly WHY your sentences feel 'off' to native ears.</div>
+      <div class="persona-card" onclick="flipCard(this)">
+        <div class="card-face card-front" style="--card-accent:var(--amber);">
+          <div class="card-emoji">&#x1F4AC;</div>
+          <div class="card-thought">&ldquo;I just need more Korean friends to practice with.&rdquo;</div>
+          <div class="card-tap">tap me</div>
+        </div>
+        <div class="card-face card-back" style="--card-accent:var(--amber);">
+          <div class="card-reality">Your HelloTalk chats are 90% English. Your Korean friends are too polite to correct you, so the same mistakes keep repeating.</div>
+          <div class="card-need">You've built real connections. What you actually need is someone who can tell you exactly WHY your sentences feel &lsquo;off&rsquo; to native ears.</div>
         </div>
       </div>
 
-      <div class="persona-card reveal" onclick="togglePersona(this)">
-        <div class="persona-icon" style="background:var(--terracotta-soft);">&#x1F4DA;</div>
-        <div class="persona-title">The Self-Study Warrior</div>
-        <div class="persona-desc">Your bookshelf has TTMIK, Korean Grammar in Use, and three notebooks.</div>
-        <div class="persona-cta">Is this you? &darr;</div>
-        <div class="persona-reveal">
-          <div class="persona-think">&ldquo;I need a more advanced textbook.&rdquo;</div>
-          <div class="persona-twist">You have incredible self-discipline. What you actually need isn't more material &mdash; it's someone to show you which 20% of what you're studying gives you 80% of results.</div>
+      <div class="persona-card" onclick="flipCard(this)">
+        <div class="card-face card-front" style="--card-accent:var(--terracotta);">
+          <div class="card-emoji">&#x1F4DA;</div>
+          <div class="card-thought">&ldquo;Maybe I need a more advanced textbook.&rdquo;</div>
+          <div class="card-tap">tap me</div>
+        </div>
+        <div class="card-face card-back" style="--card-accent:var(--terracotta);">
+          <div class="card-reality">Your shelf has TTMIK, Korean Grammar in Use, and three half-filled notebooks. You understand the grammar &mdash; but can't use it naturally.</div>
+          <div class="card-need">You have incredible self-discipline. What you need isn't more material &mdash; it's someone to show you which 20% gives you 80% of the results.</div>
         </div>
       </div>
 
-      <div class="persona-card reveal" onclick="togglePersona(this)">
-        <div class="persona-icon" style="background:var(--lavender-soft);">&#x1F3EB;</div>
-        <div class="persona-title">The Classroom Learner</div>
-        <div class="persona-desc">You attend Korean classes at a local academy or university.</div>
-        <div class="persona-cta">Is this you? &darr;</div>
-        <div class="persona-reveal">
-          <div class="persona-think">&ldquo;I need a better academy with better teachers.&rdquo;</div>
-          <div class="persona-twist">If you want the best lectures, go to Megastudy &mdash; they're 1000% better than any local academy. But if you want to enjoy studying WITH friends, to explain things to each other, to grow together... that's a different question entirely.</div>
+      <div class="persona-card" onclick="flipCard(this)">
+        <div class="card-face card-front" style="--card-accent:var(--lavender);">
+          <div class="card-emoji">&#x1F3EB;</div>
+          <div class="card-thought">&ldquo;I need a better Korean class with better teachers.&rdquo;</div>
+          <div class="card-tap">tap me</div>
+        </div>
+        <div class="card-face card-back" style="--card-accent:var(--lavender);">
+          <div class="card-reality">You sit in class, understand the lecture, then forget it all by next week. The pace never matches yours &mdash; too fast or too slow.</div>
+          <div class="card-need">If you want the best lectures, go to Megastudy. But if you want to grow WITH friends who share your level, your timezone, your curiosity &mdash; that's what Uridle builds.</div>
         </div>
       </div>
 
-      <div class="persona-card reveal" onclick="togglePersona(this)" style="border:2px solid var(--amber);">
-        <div class="persona-icon" style="background:var(--amber-soft);">&#x1F680;</div>
-        <div class="persona-title">The Serious Builder</div>
-        <div class="persona-desc">You've tried everything and you're ready to invest in yourself.</div>
-        <div class="persona-cta">Is this you? &darr;</div>
-        <div class="persona-reveal">
-          <div class="persona-think">&ldquo;I need a native speaker to practice with.&rdquo;</div>
-          <div class="persona-twist">You don't need a conversation partner. You need a system builder &mdash; someone who designs your roadmap, fixes your thinking patterns, and eventually makes themselves unnecessary.</div>
+      <div class="persona-card featured" onclick="flipCard(this)">
+        <div class="card-face card-front" style="--card-accent:var(--amber);">
+          <div class="card-emoji">&#x1F680;</div>
+          <div class="card-thought">&ldquo;I'm done experimenting. I want real results.&rdquo;</div>
+          <div class="card-tap">tap me</div>
+        </div>
+        <div class="card-face card-back" style="--card-accent:var(--amber);">
+          <div class="card-reality">You've tried apps, classes, language exchange, YouTube. You know what doesn't work. You're ready to invest in what does.</div>
+          <div class="card-need">You don't need a conversation partner. You need a system builder who designs your roadmap, fixes your thinking patterns, and eventually makes themselves unnecessary.</div>
         </div>
       </div>
 
     </div>
 
     <div class="persona-after" id="personaAfter">
-      Whatever path brought you here, you're in the right place.
-    </div>
-  </div>
-</section>
-
-<!-- ============================================
-     PHILOSOPHY SECTION
-     ============================================ -->
-<section id="philosophy" class="section">
-  <div class="section-inner">
-    <div class="philosophy-header reveal">
-      <h2>Three Layers of Learning</h2>
-      <p style="opacity:0.7;">Click each ring to explore.</p>
-    </div>
-
-    <div class="circles-wrapper">
-      <div class="circle circle-outer" onclick="showPhilosophy('culture')">
-        <span class="circle-label">Culture</span>
-      </div>
-      <div class="circle circle-middle" onclick="showPhilosophy('structure')">
-        <span class="circle-label">Structure</span>
-      </div>
-      <div class="circle circle-inner" onclick="showPhilosophy('sounds')">
-        <span class="circle-label">Sounds</span>
-      </div>
-    </div>
-
-    <div class="philosophy-detail" id="phil-culture">
-      <div class="philosophy-content" style="border-left-color:var(--amber);">
-        <h3 style="color:var(--amber);">Culture &mdash; The Context for Everything</h3>
-        <ul>
-          <li style="--dot-color:var(--amber);">Why Koreans ask about age &mdash; hierarchy is a respect system, not a power play</li>
-          <li style="--dot-color:var(--amber);">Why addresses go large to small &mdash; the collective comes before the individual</li>
-          <li style="--dot-color:var(--amber);">Nunchi (&#45576;&#52824;) &mdash; reading the room before you speak a word</li>
-          <li style="--dot-color:var(--amber);">Language without culture is just noise</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="philosophy-detail" id="phil-structure">
-      <div class="philosophy-content" style="border-left-color:var(--sage);">
-        <h3 style="color:var(--sage);">Structure &mdash; The Framework Within Culture</h3>
-        <ul>
-          <li style="--dot-color:var(--sage);">Korean word order: Subject-Object-Verb &mdash; the action always comes last</li>
-          <li style="--dot-color:var(--sage);">Sentence building blocks that stack like LEGO</li>
-          <li style="--dot-color:var(--sage);">35-day plans, monthly roadmaps, daily micro-tasks</li>
-          <li style="--dot-color:var(--sage);">Random studying = random results</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="philosophy-detail" id="phil-sounds">
-      <div class="philosophy-content" style="border-left-color:var(--terracotta);">
-        <h3 style="color:var(--terracotta);">Sounds &mdash; What You Ultimately Produce</h3>
-        <ul>
-          <li style="--dot-color:var(--terracotta);">Pronunciation that native speakers actually understand</li>
-          <li style="--dot-color:var(--terracotta);">Intonation patterns that carry meaning beyond words</li>
-          <li style="--dot-color:var(--terracotta);">Self-correction techniques for independence</li>
-          <li style="--dot-color:var(--terracotta);">Your voice becomes your own &mdash; not a textbook echo</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================
-     SYSTEM SECTION
-     ============================================ -->
-<section id="system" class="section">
-  <div class="section-inner">
-    <div class="system-header reveal">
-      <h2>How It Actually Works</h2>
-    </div>
-
-    <div class="system-timeline">
-      <div class="system-phase reveal">
-        <div class="system-dot" style="background:var(--amber);"></div>
-        <h3>Phase 1: The Trial</h3>
-        <p>Tell me your story, not just your grammar level. We talk about your life, your goals, and why Korean matters to you. Then I sketch a realistic plan.</p>
-      </div>
-
-      <div class="system-phase reveal">
-        <div class="system-dot" style="background:var(--terracotta);"></div>
-        <h3>Phase 2: The Roadmap</h3>
-        <p>A specific plan &mdash; monthly, weekly, daily. Not &ldquo;try harder&rdquo; but &ldquo;do this, then this, then verify here.&rdquo;</p>
-      </div>
-
-      <div class="system-phase reveal">
-        <div class="system-dot" style="background:var(--sage);"></div>
-        <h3>Phase 3: Between Classes</h3>
-        <p>Small assignments, voice recordings, gentle nudges. Detailed feedback within 24 hours &mdash; not just &ldquo;great job!&rdquo; but a thorough analysis with my own voice recordings.</p>
-      </div>
-
-      <div class="system-phase reveal">
-        <div class="system-dot" style="background:var(--lavender);"></div>
-        <h3>Phase 4: In Class</h3>
-        <p>By the time class starts, you've already improved. Class becomes a Growth Verification Session &mdash; not a lecture. You speak, I listen and refine.</p>
-      </div>
-
-      <div class="system-phase reveal">
-        <div class="system-dot" style="background:var(--amber);"></div>
-        <h3>Phase 5: Independence</h3>
-        <p>The goal is for you to not need me. How to analyze sentences yourself, use AI effectively, self-correct pronunciation. When you can fly solo, my job is done.</p>
-      </div>
+      Whatever path brought you here &mdash; you're in the right place.
     </div>
   </div>
 </section>
@@ -1202,15 +955,21 @@ const scrollHint = document.getElementById('scrollHint');
 // Set total slide count
 document.getElementById('slideTotal').textContent = slides.length;
 
+// Calculate total scroll distance
+function getScrollDistance() {
+  return track.scrollWidth - window.innerWidth;
+}
+
 // Horizontal scroll: pin storybook, scroll down = slides move left
 const storyTl = gsap.to(track, {
-  x: () => -(track.scrollWidth - window.innerWidth),
+  x: () => -getScrollDistance(),
   ease: 'none',
   scrollTrigger: {
     trigger: '#storybook',
     pin: true,
     scrub: 1,
-    end: () => '+=' + (track.scrollWidth - window.innerWidth),
+    invalidateOnRefresh: true,
+    end: () => '+=' + getScrollDistance(),
     snap: {
       snapTo: 1 / (slides.length - 1),
       duration: { min: 0.2, max: 0.4 },
@@ -1231,6 +990,9 @@ const storyTl = gsap.to(track, {
     }
   }
 });
+
+// Recalculate after fonts and images are fully loaded
+window.addEventListener('load', () => ScrollTrigger.refresh());
 
 // Slide entrance animations: each slide fades in as it enters viewport
 slides.forEach((slide) => {
@@ -1276,56 +1038,29 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-/* ============ Persona Toggle ============ */
-function togglePersona(card) {
-  const wasActive = card.classList.contains('active');
-  document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('active'));
-  if (!wasActive) {
-    card.classList.add('active');
+/* ============ Persona Flip Cards ============ */
+function flipCard(card) {
+  card.classList.toggle('flipped');
+  // Show after-message when any card has been flipped
+  const anyFlipped = document.querySelector('.persona-card.flipped');
+  document.getElementById('personaAfter').classList.toggle('visible', !!anyFlipped);
+}
+
+// GSAP stagger entrance for persona cards
+ScrollTrigger.create({
+  trigger: '#personas',
+  start: 'top 75%',
+  once: true,
+  onEnter: () => {
+    gsap.from('.persona-card', {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: 'power3.out'
+    });
   }
-  const anyOpened = document.querySelector('.persona-card.active');
-  document.getElementById('personaAfter').classList.toggle('visible', !!anyOpened);
-}
-
-/* ============ Philosophy Circles ============ */
-function showPhilosophy(which) {
-  const details = ['culture', 'structure', 'sounds'];
-  const circles = document.querySelectorAll('.circle');
-
-  details.forEach(d => {
-    const el = document.getElementById('phil-' + d);
-    if (d === which && !el.classList.contains('open')) {
-      el.classList.add('open');
-    } else {
-      el.classList.remove('open');
-    }
-  });
-
-  circles.forEach(c => c.classList.remove('active'));
-  if (which === 'culture') circles[0].classList.add('active');
-  if (which === 'structure') circles[1].classList.add('active');
-  if (which === 'sounds') circles[2].classList.add('active');
-}
-
-// Auto-open culture on scroll
-const philObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      setTimeout(() => showPhilosophy('culture'), 500);
-      philObserver.disconnect();
-    }
-  });
-}, { threshold: 0.3 });
-philObserver.observe(document.getElementById('philosophy'));
-
-/* Philosophy list bullet colors */
-document.querySelectorAll('.philosophy-content li').forEach(li => {
-  const color = getComputedStyle(li).getPropertyValue('--dot-color').trim();
-  li.style.setProperty('--dot-bg', color);
 });
-const bulletStyle = document.createElement('style');
-bulletStyle.textContent = `.philosophy-content li::before { background: var(--dot-bg, var(--amber)); }`;
-document.head.appendChild(bulletStyle);
 
 /* ============ GSAP ScrollTrigger Enhancements ============ */
 
@@ -1341,31 +1076,6 @@ ScrollTrigger.create({
       duration: 1,
       ease: 'elastic.out(1, 0.4)'
     });
-  }
-});
-
-// Philosophy circles: gentle breathing
-gsap.to('.circle-outer', {
-  scale: 1.02, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut',
-  scrollTrigger: { trigger: '#philosophy', start: 'top 80%' }
-});
-gsap.to('.circle-middle', {
-  scale: 1.03, duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.4,
-  scrollTrigger: { trigger: '#philosophy', start: 'top 80%' }
-});
-gsap.to('.circle-inner', {
-  scale: 1.04, duration: 2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.8,
-  scrollTrigger: { trigger: '#philosophy', start: 'top 80%' }
-});
-
-// System timeline: draw the line as you scroll
-ScrollTrigger.create({
-  trigger: '.system-timeline',
-  start: 'top 75%',
-  end: 'bottom 50%',
-  onUpdate: (self) => {
-    const line = document.querySelector('.system-timeline');
-    if (line) line.style.setProperty('--line-progress', self.progress);
   }
 });
 
