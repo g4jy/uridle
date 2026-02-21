@@ -1,7 +1,8 @@
 # Uridle (우리들) — Project Plan & Workflow
 
 > **Last Updated**: 2026-02-21
-> **Status**: Phase 0-3 DONE → Phase 4 (Illustrations & Polish) next
+> **Status**: Phase 0-5 DONE → Phase 6 (Future Enhancements) next
+> **Live**: https://g4jy.github.io/uridle/
 > **Repository**: `G:\내 드라이브\uridle\`
 
 ---
@@ -568,24 +569,35 @@ ScrollTrigger — included with GSAP
 - [x] Build Booking form with success state
 - [x] Cross-link back to Page 1
 - [x] Playwright verification: all sections render, timezone switching works, addon panels open/close
-- [ ] Implement continuous thread SVG (animated stroke-dashoffset — Phase 4)
-- [ ] Webhook integration for form submission (Phase 5)
+- [x] Implement continuous thread SVG (animated stroke-dashoffset — Phase 4)
+- [ ] Webhook integration for form submission (Phase 6)
 
-### Phase 4: Illustrations & Polish
-- [ ] Generate AI SVG illustrations for all 24+ storybook slides
+### Phase 4: Animations & Polish [DONE]
+- [x] Add GSAP + ScrollTrigger CDN to both pages
+- [x] Page 1: Slide entrance parallax (illustration scale, text slide-up)
+- [x] Page 1: Pyramid peak elastic bounce entrance
+- [x] Page 1: Philosophy circles breathing animation
+- [x] Page 1: System timeline draw-on-scroll (scaleY progress)
+- [x] Page 1: CTA button attention pulse ring
+- [x] Page 1: Paper texture overlay on illustration placeholders (feTurbulence SVG)
+- [x] Page 2: Continuous thread SVG (sinusoidal path, scroll-driven stroke-dashoffset)
+- [x] Page 2: Staggered waypoint entrance (alternating left/right)
+- [x] Page 2: Package cards stagger with scale
+- [x] Page 2: Addon items wave entrance
+- [x] Install Frontend Design plugin, Interface Design plugin, UI/UX Pro Max skill, GSAP Master MCP
+- [ ] Generate AI SVG illustrations for 24+ storybook slides (external tools needed)
 - [ ] Refine illustration style consistency
-- [ ] Add hand-drawn filter effects (feTurbulence, paper texture)
 - [ ] Add stroke-dasharray drawing animations for key illustrations
-- [ ] Final animation timing polish
-- [ ] Performance optimization (lazy load, SVGO, font preload)
 
-### Phase 5: Testing & Deploy
+### Phase 5: Deploy [DONE]
+- [x] Create GitHub repository (g4jy/uridle)
+- [x] Push main branch
+- [x] Create gh-pages branch (subtree from src/)
+- [x] Enable GitHub Pages
+- [x] Verify live deployment: https://g4jy.github.io/uridle/
 - [ ] Mobile responsive testing (Playwright device emulation)
 - [ ] Cross-browser testing (Chrome, Safari, Firefox)
 - [ ] Accessibility audit (keyboard navigation, screen readers, contrast)
-- [ ] Create GitHub repository
-- [ ] Deploy to GitHub Pages
-- [ ] Test live deployment
 - [ ] Set up custom domain (if ready)
 
 ### Phase 6: Future Enhancements
